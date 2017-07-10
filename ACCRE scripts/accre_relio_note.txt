@@ -1,25 +1,29 @@
-/dors/ohilab/home/binshtem
+/dors/userlab/home/username
 
-*** all Relion accre (SLURM) scripts are in ~/accre/bin
-*** all other scripts are in ~/bin
+*** all Relion accre (SLURM) scripts are in ACCRE scripts
+*** all other scripts are in general scripts
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*** in RElion 2.x and above you can use the built-in preprocessing and on-the-fly features***
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 ***************************************************************************************
 Relion workflow data preprocessing:
 =======================================================================================
 
 
-1. transfer dm4 file from Polara ex-raid\Cryo-GPU to MDO5 [use ssh app on the K2 computer]
-2. If needed rename/renumber the dm4 file [toRenameInc.sh]
-3. back-up the dm4 file. finish this step befor mooving to motion correction or modify the script !!!!
+1. transfer .dm4/.mrc file from Polara ex-raid to CryoGPU [rcync/rt_copy_mew.com]
+2. If needed rename/renumber the files [toRenameInc.sh]
+3. back-up the raw files. finish this step befor mooving to motion correction or modify the script !!!!
 4. motion correction .dm4 --> .mrcs --> .mrc [DfCorrY.sh/dm2mrcMoCoFFT.sh/motioncorr2_1.sh/]
 5. check for black frame [Dflog_list.sh]
-6. delete .mrcs file
-7. copy mrc file to working Dir in DORS
+6. delete .mrcs/raw files from cryoGPU
+7. move mrc (sum) file to working Dir in DORS
 8. for RELION make .star file
 9. CTF4 [ctffind4.slurm] or other CTF app [sxcter.py/gctf.sh]
-10 get the ctf4 parameters  [list_ctffind4_V3.sh]
+10. get the ctf4 parameters  [list_ctffind4_V3.sh]
 11. filter your micrographs ctf parameter list and get ride from bad micrographs (resolution, defocus astigmatisem)[ctf_filter2rl.sh/sxctf_filter2rl.sh]
-12. pick manualy or autopick can be done in relion, eman2, Gautometch. [autopick.slurm/gpick.sh]
+12. pick manualy or autopick, can be done in relion, eman2, Gautometch. [autopick.slurm/gpick.sh]
 13. extract the partical. if you done autopick you can sort the particles (get z-score and filter bad particles)
 14. 2D class in relion [2Dclass.slurm] or eman2 (you can transfer your relion project to eman2 with e2reliontoeman.py script, use --help or from the eman gui)
 15. 3D class in relion [3Dclass.slurm]
@@ -31,7 +35,7 @@ Modification if using real-time proccesing
 
 *** if you use real-time you all-ready done at list dm4-->mrc, motion correction and ctf.
 
-1. to use real-time proccesing use [Motioncorr_Gautomatch_Gctf_Real-time_Auto-run_dm4.com] script
+1. to use real-time proccesing use [mpc_rt_v2.com] script
 2. transfer the sum.mrc and movie.mrcs file to your dors Dir and backup the .dm4 file
 3. delete everything from cryo-GPU for next user
 4. for RELION make .star file
@@ -56,11 +60,5 @@ ACCRE
 7. to get information on job:  sacct --format JobID,jobname,NTasks,nodelist,MaxRSS,MaxVMSize,AveRSS,AveVMSize or sstat
 8. information on job: scontrol Show job <jobID> 
 9. information on job: rtractjob <jobID>
-10.
-11.
-12.
-13.
-14.
-15.
 
 
