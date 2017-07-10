@@ -1,0 +1,66 @@
+/dors/ohilab/home/binshtem
+
+*** all Relion accre (SLURM) scripts are in ~/accre/bin
+*** all other scripts are in ~/bin
+
+***************************************************************************************
+Relion workflow data preprocessing:
+=======================================================================================
+
+
+1. transfer dm4 file from Polara ex-raid\Cryo-GPU to MDO5 [use ssh app on the K2 computer]
+2. If needed rename/renumber the dm4 file [toRenameInc.sh]
+3. back-up the dm4 file. finish this step befor mooving to motion correction or modify the script !!!!
+4. motion correction .dm4 --> .mrcs --> .mrc [DfCorrY.sh/dm2mrcMoCoFFT.sh/motioncorr2_1.sh/]
+5. check for black frame [Dflog_list.sh]
+6. delete .mrcs file
+7. copy mrc file to working Dir in DORS
+8. for RELION make .star file
+9. CTF4 [ctffind4.slurm] or other CTF app [sxcter.py/gctf.sh]
+10 get the ctf4 parameters  [list_ctffind4_V3.sh]
+11. filter your micrographs ctf parameter list and get ride from bad micrographs (resolution, defocus astigmatisem)[ctf_filter2rl.sh/sxctf_filter2rl.sh]
+12. pick manualy or autopick can be done in relion, eman2, Gautometch. [autopick.slurm/gpick.sh]
+13. extract the partical. if you done autopick you can sort the particles (get z-score and filter bad particles)
+14. 2D class in relion [2Dclass.slurm] or eman2 (you can transfer your relion project to eman2 with e2reliontoeman.py script, use --help or from the eman gui)
+15. 3D class in relion [3Dclass.slurm]
+
+
+***************************************************************************************
+Modification if using real-time proccesing
+=======================================================================================
+
+*** if you use real-time you all-ready done at list dm4-->mrc, motion correction and ctf.
+
+1. to use real-time proccesing use [Motioncorr_Gautomatch_Gctf_Real-time_Auto-run_dm4.com] script
+2. transfer the sum.mrc and movie.mrcs file to your dors Dir and backup the .dm4 file
+3. delete everything from cryo-GPU for next user
+4. for RELION make .star file
+5. get the ctf4 parameters  [list_ctffind4_V3.sh]
+6. filter your micrographs ctf parameter list and get ride from bad micrographs (resolution, defocus astigmatisem)[ctf_filter2rl.sh/sxctf_filter2rl.sh]
+7. pick manualy or autopick can be done in relion, eman2, Gautometch. [autopick.slurm/gpick.sh]
+8. extract the partical. if you done autopick you can sort the particles (get z-score and filter bad particles). whet you extract it will be smart to downsample the particles by 2-4 to get this faster. 
+9. 2D and 3D class when you have good class extract agian with thh origenl samole size and go to autorefine.
+
+
+***************************************************************************************
+ACCRE
+=======================================================================================
+
+1. log in with==> ssh -Y userID@login.accre.vanderbilt.edu
+2. type PW
+3. workin Dir.  1- dors ==> /dore/lab-name/home/usderID/accre
+		2- home or scretch (limited vol not backup)
+4. transfer data to home ==> scp my_file userID@vmplogin.accre.vanderbilt.edu:~/dir [add -c blowfish for faster copy]
+5. for autopick put more then 5GB mem
+6. 2D 100 calss with 50k particle take more then 7h
+7. to get information on job:  sacct --format JobID,jobname,NTasks,nodelist,MaxRSS,MaxVMSize,AveRSS,AveVMSize or sstat
+8. information on job: scontrol Show job <jobID> 
+9. information on job: rtractjob <jobID>
+10.
+11.
+12.
+13.
+14.
+15.
+
+
