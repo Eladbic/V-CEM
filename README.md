@@ -1,4 +1,4 @@
-# VCEM
+# V-CEM
 Vanderbilt Cryo-EM Facility.
 
 Those scripts were writen/edit by V-CEM users. You can use\edit them freely by copy them to your home path.
