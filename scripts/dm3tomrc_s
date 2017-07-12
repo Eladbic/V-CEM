@@ -1,0 +1,10 @@
+#!/bin/csh -f
+# this script is for converting dm3 files to mrc
+
+foreach dm3 (*.dm3)
+
+set root_name = `basename $dm3 .dm3`
+set mrc = $root_name".mrc"
+proc2d $dm3 $mrc apix=1.5 edgenorm 
+
+end

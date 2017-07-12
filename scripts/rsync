@@ -1,0 +1,136 @@
+SHORT 3-Step process		
+
+	ps -ef | grep rsync
+
+	sudo rsync -rtv --dry-run --itemize-changes --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+
+	sudo rsync -rtv --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+
+
+
+
+
+
+LONG 3-Step process with details and outputs:
+
+
+1) Make sure that all rsync jobs have finished.  Type:
+
+     ######	ps -ef | grep rsync	#####
+
+	a)If NO job is running you will see something similar to the following:
+		collies1 18058 21304  0 10:27 pts/1    00:00:00 grep rsync
+	
+	b)If a job is still running you will see an output like the following:
+		# ps -ef | grep rsync
+		root   65996      1 77 08:59 ?  00:24:48 rsync -r --exclude=$RECYCLE.BIN --exclude=System Volume Information --exclude=.nfs /raidx/ /data
+		root   65997  65996  0 08:59 ?  00:00:00 rsync -r --exclude=$RECYCLE.BIN --exclude=System Volume Information --exclude=.nfs /raidx/ /data
+		root   65998  65997 81 08:59 ?  00:26:06 rsync -r --exclude=$RECYCLE.BIN --exclude=System Volume Information --exclude=.nfs /raidx/ /data
+
+	c)If the rsync job is still running wait till it has completed before starting a new transfer
+
+2)To see which files will be synced, but not actually sync the files, use:
+
+     #####	sudo rsync -rtv --dry-run --itemize-changes --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data	#####
+
+	Output in Terminal:
+	cryogpu:/data% sudo rsync -rtv --dry-run --itemize-changes --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+		sending incremental file list
+		.d..t...... ./	
+		.d..t...... Teru/A2C3_GYKI/
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1947.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1948.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1949.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1950.dm4
+		......
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_2049.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_2050.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_2051.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_2052.dm4
+		>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_2053.dm4
+
+3)To sync the files and see the progress, use:
+
+     #####	sudo rsync -rtv --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data	#####
+
+	Output in terminal:
+	cryogpu:/home/collies1/Desktop% sudo rsync -rtv --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+		sending incremental file list
+		./
+		Teru/A2C3_GYKI/
+		newtest/
+		tasia2/
+		tasia2/s1m1_3121.dm4
+	 	  9113540758 100%  225.04MB/s    0:00:38 (xfer#1, to-check=78/209)
+		tasia2/s1m1_3122.dm4
+		  9113540849 100%  205.87MB/s    0:00:42 (xfer#2, to-check=77/209)
+		tasia2/s1m1_3123.dm4
+		  9113540758 100%  209.07MB/s    0:00:41 (xfer#3, to-check=76/209)
+		tasia2/s1m1_3124.dm4
+		  9113540758 100%  203.44MB/s    0:00:42 (xfer#4, to-check=75/209)
+		tasia2/s1m1_3125.dm4
+		  9113540758 100%  194.40MB/s    0:00:44 (xfer#5, to-check=74/209)
+
+############################# Other Methods of RSYNC  ###############################################################
+
+
+4)To see which files will be synced, and actually sync the files, use:
+
+	sudo rsync -rtv --itemize-changes --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+	
+5)To sync the files and not see the progress, use:
+
+	sudo rsync -rtv --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+
+6)To sync the files and not see the progress with less verbose output, use:
+
+	sudo rsync -rt --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+
+###############################  OLD METHOD  ########################################################################
+
+
+
+2) Once the rsync job has completed 
+
+     ps -ef | grep rsync
+
+	a)Check that all of the necessary data was transfered to /data
+	b)Remove files from raidx on the Windows PC in the Polara room 
+		*The /raidx directory on cryoGPU is read only.  Files cannont be directly deleted from this drive
+
+3) Set up a new rsync job by typing:
+
+sudo rsync -rtv --dry-run --itemize-changes --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+
+	
+sudo rsync -rt --progress -exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+
+	a) check that the job is running by typing (same as step #1):
+
+	ps -ef | grep rsync
+
+
+# rsync -rtv --dry-run --itemize-changes --progress --exclude='$RECYCLE.BIN' --exclude='System Volume Information' --exclude='.nfs' /raidx/ /data
+sending incremental file list
+.d..t...... ./
+.d..t...... Teru/A2C3_GYKI/
+>f..t...... Teru/A2C3_GYKI/A2C3_GYKI_1668.dm4
+>f..t...... Teru/A2C3_GYKI/A2C3_GYKI_1669.dm4
+>f..t...... Teru/A2C3_GYKI/A2C3_GYKI_1670.dm4
+>f..t...... Teru/A2C3_GYKI/A2C3_GYKI_1671.dm4
+:
+:
+>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1737.dm4
+>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1738.dm4
+>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1739.dm4
+>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1740.dm4
+>f+++++++++ Teru/A2C3_GYKI/A2C3_GYKI_1741.dm4
+
+
+sent 1912 bytes  received 244 bytes  4312.00 bytes/sec
+total size is 765537425290  speedup is 355073017.30 (DRY RUN)
+
+
+
+272 coqui:/home/collies1/TRPC6_Minimal/Particles072116% sxtransform2d.py bdb:sTRPC6vstackf 
+
