@@ -1,0 +1,8 @@
+1. put HDD in the HDD docking #1 (source) and turn it ON (make sure in mount).
+2. open rt_copy_new.com and rt_copy_backop.com in text editor.
+3. set the path for K2/cryoupu/backup.
+4. start rt_copy_backop.com.
+5. start rt_copy_new.com.
+6. go to collect data.
+7. If you want to stop the scripts type 'touch all_stop'.
+
