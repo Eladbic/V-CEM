@@ -1,0 +1,41 @@
+2016-08-04
+
+ext: whatever three letter extension you would like to use for your project. I use .vac since I work on VacA.
+
+	
+#########################################################################
+ 
+mkdir create_stack
+1. First the averages need to be translationally aligned with a "reference class average".
+
+To do this use cull_s.sc:
+   a. create a "stack" containing each class average as a particle
+      In this example: win_00001 = file1.ext (# particles)
+                       win_00002 = file2.ext (# particles)
+ 
+ Create win directory
+ Create 0001 directory within win directory
+ Place "particles" in 0001,
+		*will need b02template.stk, b03.nrm, b03template.nrm 
+
+2. Once the two references have been combined into a stack we  will "align" it to a reference using mra.sc.  
+	*will need b03template.mra, cc_cut.sc, center.mra, combat.mra, mergeneg.awk, only_good.awk in directory
+
+  For this case the aligment was against the file1.ext
+	#I copied file1.ext two times to create: ref001.vac and ref002.vac (a reference for each "particle" in the stack).  Then set the real      alignment to align two "references".  The alignment will not work, however the data002.vac stack that is generated will have all the class averages properly translationaly aligned so that a comparision between each 2D projections can be made. Can visualize in WEB.
+ 
+3. unstack data002.vac file (using b04.uns).  Rename the "particles" (actually averages) to file1.ext_t.vac and file2.ext_t.vac ("t" denotes translationally aligned)
+to run b04.uns (before running you need to manually change number of particles in the stack in b04.uns):
+
+>spider
+ENTER PROJECT/DATA EXTENSION: uns/ext
+OPERATION: b04
+
+
+
+DIFFERENCE MAPPING
+use b05.uns
+	>spider
+	>uns/vac
+	>b05
+visualize in WEB

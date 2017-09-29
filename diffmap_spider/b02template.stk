@@ -1,0 +1,27 @@
+; template script for stacking windowed images
+; IMGNUM is replaced with the four digit micrograph number
+; PRTNUM is replaced with the number of particles picked from that
+;           micrograph
+; STKLOC is replaced with first available slot in the stack
+; SRCLOC is replaced with the directory name for the windowed images
+; SRC2LOC is replaced with the basename of the windowed images
+;
+; x20 is the number of good windowed particles 
+; x21 is the number of the first available stack slot
+;
+x20=PRTNUM
+x21=STKLOC
+;
+do lb1 x22=1,x20
+ud x22,x30,x31
+SRCLOC/IMGNUM/goodIMGNUM
+cp
+SRCLOC/IMGNUM/SRC2LOC{*****x30}
+../stacks/SRCLOC@{*****x21}
+x21=x21+1
+lb1
+; ud e
+; SRCLOC/IMGNUM/goodIMGNUM
+en d
+
+

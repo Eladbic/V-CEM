@@ -1,0 +1,49 @@
+[x81]
+; x81 - number of images
+fr
+?Input file series?<1>
+fr
+?Output file series?<2>
+fr
+?Document file to store the shifts?<3>
+;
+do lb1 i=1,x81
+x90=x0
+cp
+<1>x90
+_1
+x21=0.0
+x22=0.0
+do lb2 j=1,100
+x91=x0
+sh
+_1
+_5
+-x21,-x22
+RO I
+_5
+_2
+CC N
+_5
+_2
+_3
+pk x11,x12
+_3
+(1,0)
+if(x11.ne.0.0) goto lb4
+if(x12.eq.0.0) goto lb3
+lb4
+x21=x21+x11
+x22=x22+x12
+lb2
+lb3
+; store shifts x-y and how many iterations were done.
+sd x90,x21,x22,x91
+<3>
+cp
+_5
+<2>x90
+lb1
+sd e
+<3>
+re

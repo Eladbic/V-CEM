@@ -1,0 +1,10 @@
+This is to rotate averages so that a line can be drawn across the middle to obtain pixel intensities.
+
+spider
+rot/spi
+rot
+input file
+output file
+45 (degree of rotation)
+quadratic
+unrotated

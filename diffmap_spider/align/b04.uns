@@ -1,0 +1,19 @@
+; This program will completely unstack a stack into the directory unstacked
+; The directory will be created for you!
+; user inputs need to be the number of images in the stack, and the stack
+; location/name
+; x20 is the number of particles to be moved into the smaller stack
+;
+vm
+echo "if(-d unstacked) rm -r unstacked"|csh
+vm
+mkdir unstacked
+;
+x20=2
+;
+do lb1 x22=1,x20
+cp
+data002@{*****x22}
+unstacked/nucut{*****x22}
+lb1
+en d

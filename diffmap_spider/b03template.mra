@@ -1,0 +1,144 @@
+; true multireference alignment
+; 
+; NOTE: user defineable parameters are marked by "nn ===>", with comments
+; as to the needed values.
+;
+; uses proceedures:
+; alqr.mra
+; center.mra
+; combat.mra
+
+; give ourselves a bit of memory
+md
+set mem
+1000
+
+; set some basic parameters:
+; x19 = number of images
+; 01 ===> set x19 to the number of images in the untilted image stack
+x19=PART
+; x20 = image size
+; 02 ===> set x20 to the width/height of the image (assumed squared)
+x20=SIZE
+; radius for alignment and mask
+; 03 ===> a bit bigger (20-40 %) than the radius of your object
+x21=OUT_RAD
+; first radius for alignment
+; 04 ===> inner radius of alignment
+x26=IN_RAD
+; search range (translational search is restricted to +/- this value)
+; 05 ===> allowed translational search size
+x28=RANGE
+; number of groups
+; 06 ===> how many groups do you have ?
+x24=GROUPS
+; number of iterations of the multireference alignment
+; 07 ===> how many iterations of the alignment algorithm should we run ?
+;         (things tend to converge by 4 to 5 iterations if all works well)
+x25=ITER
+
+; prepare selection files for AP MQ
+doc create
+select_group
+1
+1-x24
+
+doc create
+select
+1
+1-x19
+
+; center all the images
+; 08 ===> modify "stacks/ucut@*****" to point to the windowed,
+;         untilted image stack.  "prj@*****" is the output projection
+;         image stack ; modify as necessary.
+; @center[x19]
+; stacks/ucut@*****
+; prj@*****
+; shift001
+
+; as an alternative, just copy the input stack
+do lb20 x31=1,x19
+cp
+INPUT@{*****x31}
+prj@{*****x31}
+lb20
+
+x91=0
+do lb18 x92=1,x19
+sd x92,x91,x91,x91,x91
+trns001
+lb18
+sd e
+trns001
+
+; copy all the centered images to the stack
+; 09 ===> modify "prj@{*****x31}" to match output image stack
+;         assigned at "08 ===>".  "data001@{*****x31}" should NOT be
+;         changed.
+do lb21 x31=1,x19
+cp
+prj@{*****x31}
+data001@{*****x31}
+lb21
+cp
+data001@
+data002@
+
+; Iterate mutlireference alignment
+do lb8 x81=1,x25
+x80=x81-1
+x82=x81+1
+
+; create subdirectory for the alignment results and averages
+vm
+echo "if(-d cluster{**x81}) rm -r cluster{**x81}"|csh
+vm
+mkdir cluster{**x81}
+
+; copy in or make the references
+if(x81.eq.1) then
+do lb22 x71=1,x24
+cp
+input_references/ref{***x71}
+cluster{**x81}/ref{***x71}
+lb22
+else
+vo mq
+(0.0)
+cluster{**x80}/apmq001
+cluster{**x81}/sel***
+cluster{**x81}/spclor
+do lb1 x71=1,x24
+as dc
+data002@*****
+cluster{**x81}/sel{***x71}
+a
+cluster{**x81}/ref{***x71}
+cluster{**x81}/var{***x71}
+lb1
+endif
+
+; do the multireference alignment
+ap mq
+cluster{**x81}/ref***
+select_group
+x28
+x26,x21
+data002@*****
+select
+cluster{**x81}/apmq001
+
+; use crosscorelation to center 2D images.
+; crosscorelate each projection only with the reference image
+; found by APMQ
+@alqr
+cluster{**x81}/apmq001
+data001@*****
+data002@*****
+trns{***x81}
+trns{***x82}
+
+lb8
+
+en

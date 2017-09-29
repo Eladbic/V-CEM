@@ -1,0 +1,213 @@
+; multireference alignment and classification
+; based off spider reference script b63.mar
+; 
+; NOTE: user defineable parameters are marked by "nn ===>", with comments
+; as to the needed values.
+;
+; uses proceedures:
+; alqmd.mra
+; center.mra
+; combat.mra
+
+; give ourselves a bit of memory
+md
+set mem
+1000
+
+; set some basic parameters:
+; x19 = number of images
+; 01 ===> set x19 to the number of images in the untilted image stack
+x19=22242	
+; x20 = image size
+; 02 ===> set x20 to the width/height of the image (assumed squared)
+x20=120
+; x22 = file code
+; 03 ===> equiv. to run extension ... set it between 1 and 9
+x22=6
+; radius for alignment and mask
+; 04 ===> a bit bigger (20-40 %) than the radius of your object
+x21=50
+; first radius for alignment
+; 05 ===> inner radius of alignment
+x26=1
+; classify by factors or by the raw data ?
+; x27=1   classification on raw data
+; x27=2   classification on factors, their number is given by x23
+; 06 ===> classify on the raw data, or based on factor analysis
+;         (use raw data for a first pass through)
+x27=1
+; number of factors in CA S
+; 07 ===> if x27=2, how many factors should we examine
+x23=10
+; number of groups
+; 08 ===> how many output groups would you like ?
+x24=20
+; number of iterations of the multireference alignment
+; 09 ===> how many iterations of the alignment algorithm should we run ?
+;         (things tend to converge by 4 to 5 iterations if all works well)
+x25=10
+
+; center all the images
+; 10 ===> modify "stacks/yeast_ucut@*****" to point to the windowed,
+;         untilted image stack.  "yeast_prj@*****" is the output projection
+;         image stack ; modify as necessary.
+@center[x19]
+../stacks/VacA_WT_d6-27_neut_22242@*****
+centered@*****
+shift001
+
+x91=0
+do lb18 x92=1,x19
+sd x92,x91,x91,x91,x91
+trns001
+lb18
+sd e
+trns001
+
+; create mask for PCA
+mo
+_9
+x20,x20
+c
+x21
+
+; if classification on raw data find number of points under
+; the mask
+if(x27.eq.1) then
+fs x81,x82,x83
+_9
+x23=x83*x20*x20
+x23=INT(x23)
+endif
+
+; copy all the centered images to the stack
+; 11 ===> modify "yeast_prj@{*****x31}" to match output image stack
+;         assigned at "10 ===>".  "data001@{*****x31}" should NOT be
+;         changed.
+do lb21 x31=1,x19
+cp
+centered@{*****x31}
+data001@{*****x31}
+lb21
+cp
+data001@
+data002@
+
+; Iterate mutlireference alignment
+do lb8 x81=1,x25
+x82=x81+1
+; Create SEQ file for PCA
+ca si
+data002@*****
+1-x19
+_9
+SEQ{***x22}
+Y
+(0.0)
+; Do the PCA
+if(x27.eq.2) then
+ca s
+SEQ{***x22}
+x23,x22
+Y
+0
+endif
+
+; create subdirectory for the classification results
+; and the averages
+vm
+echo "if(-d cluster{**x81}) rm -r cluster{**x81}"|csh
+vm
+mkdir cluster{**x81}
+
+; classification
+cl km
+x27
+x22
+x24
+1-x23
+(0)
+(0)
+cluster{**x81}/sel***
+cluster{**x81}/cluster
+
+; get the averages
+do lb1 x71=1,x24
+as dc
+data002@*****
+cluster{**x81}/sel{***x71}
+a
+cluster{**x81}/avg{***x71}
+cluster{**x81}/var{***x71}
+lb1
+
+
+; optional
+; Put averages in a decent orientation
+; centr would use rotational average to center the images
+@center[x24]
+cluster{**x81}/avg***
+cluster{**x81}/cvg***
+cluster{**x81}/centar
+;
+; Another possibility is to use CG PH to center the averages
+;do lb51 x51=1,100
+;cg ph,x10,x10,x41,x42
+;cluster{**x81}/avg{***x51}
+;sh f
+;cluster{**x81}/avg{***x51}
+;cluster{**x81}/cvg{***x51}
+;-x41,-x42
+;lb51
+
+; align averages roationaly
+ap ra
+cluster{**x81}/cvg***
+1-x24
+x26,x21
+(0)
+F
+cluster{**x81}/haldoc
+
+do lb41 x90=1,x24
+ud ic,x90,x41,x42,x43,x44
+cluster{**x81}/haldoc
+rt sq
+cluster{**x81}/cvg{***x41}
+cluster{**x81}/rvg{***x41}
+x42
+(0,0)
+lb41
+ud ice
+cluster{**x81}/haldoc
+
+; end of optional alignment of the averages
+
+
+; do the multireference alignment
+;
+; rotation first
+ap md
+cluster{**x81}/rvg***
+1-x24
+x26,x21
+(1)
+N
+data002@*****
+1-x19
+cluster{**x81}/apmd001
+
+; use crosscorelation to center 2D images.
+; crosscorelate each projection only with the reference image
+; found by APMD
+@alqmd
+cluster{**x81}/apmd001
+data001@*****
+data002@*****
+cluster{**x81}/rvg***
+trns{***x81}
+trns{***x82}
+
+lb8
+
+en

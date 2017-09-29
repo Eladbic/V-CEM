@@ -1,0 +1,117 @@
+; [x80,x81,x82]
+; normalize_and_delint.cst:
+; proceedure to normalize and delint an image
+; User edits: image size, sigma multiplier, dust removal, 
+; input stack, output stack number of images (===> signifies edit locations)
+; 
+
+; ===> x80 = image size (assumed square)
+x80=64
+; ===> x81 = sigma mutliplier (for scaling results of normalization)
+x81=10
+; ===> x82 = dust/lint removal limit (in sigma units) (0.0 for no modification)
+x82=5
+
+; ==> number of particles in the stack
+x66=8
+
+do lb1 x67=1,x66
+; modify the lint checking limit by sigma modifier
+x83 = x81 * x82
+
+; make our inline processing stack
+ms
+_9@
+x80,x80,1
+(10)
+
+; --- normalize the image ---
+; ===> Change "stacks/ucut to match the stack to be normalized
+; copy the input image inline
+cp
+../stacks//win@{*****x67}
+_9@1
+
+; get some statistics on the input particle image
+fs x91,x92,x93,x94
+_9@1
+
+; modify sigma as requested
+x95 = (x94 / x81)
+
+; make some blank images with the average and modified std. dev
+bl
+_9@2
+(x80,x80)
+N
+x93
+
+bl
+_9@3
+(x80,x80)
+N
+x95
+
+; subtract the image average from itself (yielding a 0.0 mean)
+su
+_9@1
+_9@2
+_9@4
+*
+
+; divide the image by the modified std. dev.
+mu d
+_9@4
+_9@3
+_9@5
+*
+
+
+; --- remove any dust or lint ---
+
+; recheck the stats after normalization
+fs x91,x92,x93,x94
+_9@5
+
+; remove that dust or lint
+; NOTE: the _tab_ before the AR IF "if" statement is _absolutely_
+;       necessary !  don't change it to spaces !
+if(x83.ne.0.0) then
+   if(x91.ge.x83) then
+	  x84 = 1
+   else
+      x84 = 0
+   endif
+else
+   x84 = 0
+endif
+
+if(x84.eq.1) then
+   ar if
+   _9@5
+   _9@6
+	if (P1.gt.x83) then p2=x83
+
+
+else
+   cp
+   _9@5
+   _9@6
+endif
+
+; recheck the stats (for posterity)
+fs x91,x92,x93,x94
+_9@6
+
+; ===> change stacks/nucut to the name of the normalized stack
+; copy the particle image out to the stack
+cp
+_9@6
+../stacks//norm_win@{*****x67}
+
+; clean up and go home
+de
+_9@
+lb1
+en d
+

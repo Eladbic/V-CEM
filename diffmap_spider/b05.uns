@@ -1,0 +1,121 @@
+; diffmap 
+; Computes difference bewteen two volumes: in this case,
+; a reconstruction minus the reference volume.
+;
+; NB : use the raw unfiltered volumes
+;
+; x44 = 1 : Use the same mask for both reference and test volume
+; (better for identifying a ligand)
+; x44 = 2 : create masks for both volume (better for identifying
+; conformational changes)
+
+x44=1		; use same mask
+
+;
+;  filter parameters for volumes
+x81=0.15 ;(0.1)
+x82=0.25 ;(0.4)
+
+; final filtration for the difference map
+;x83=0.12
+;x84=0.25
+
+;..............................
+; the reference volume
+CP 
+wt15_tref001
+_9
+
+FQ
+_9
+_1
+7            ; Butterworth filter
+x81,x82      ; pass-band and stop-band frequencies
+
+FS x21,x22   ; max & min 
+_1
+
+x52=(x22-x21)/2   ; The threshold is a value
+x52=x52+x21       ; halfway between min & max
+
+TH M       ; Threshold & create Mask
+_1
+_5         ; output mask
+b          ; If (pixel > threshold) Mask = 1; else Mask = 0
+x52        ; threshold
+
+FS M,x21,x22,x23,x24  ; Find Statistics within a mask (max, min, avg, stddev)
+_1         ; image
+_5         ; mask
+
+AR
+_1
+_7
+((p1-x23)/x24)
+
+; 2nd volume: the reference is subtracted from this volume
+CP
+wt2_tref002
+_9
+
+FQ
+_9
+_2
+7
+x81,x82
+
+;IF (x44.EQ.1) GOTO LB1
+; this part creates a mask for the 2nd volume
+
+;FS x21,x22   ; max & min
+;_2
+
+;x52=(x22-x21)/2   ; The threshold is a value
+;x52=x52+x21       ; halfway between min & max
+
+;TH M       ; Threshold & create Mask
+;_2
+;_5         ; output mask
+;b          ; If (pixel > threshold) Mask = 1; else Mask = 0
+;x52        ; threshold
+
+
+;LB1
+
+FS M,x21,x22,x23,x24
+_2         ; image
+_5         ; mask (either from reference or created for 2nd vol)
+
+AR
+_2
+_6
+((p1-x23)/x24)
+
+SU
+_6		; 2nd volume
+_7		; reference
+_5		; result
+*
+
+FQ 
+_5
+_8
+7
+x81,x82
+
+FS   ; statistics before filtering
+_5
+
+FS   ; statistics after filtering
+_8
+
+CP
+_5
+dif001
+
+CP
+_8
+diff001
+
+EN D
+

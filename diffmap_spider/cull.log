@@ -1,0 +1,28 @@
+micrograph number 0001 contains 2 particles of which 0002 are good.
+ NOTE: micrograph 0001 runs from stack location 1 to 2
+
+ \__`O O'__/        SPIDER  --  COPYRIGHT 1993
+ ,__xXXXx___        HEALTH RESEARCH INC., ALBANY, NY.
+  __xXXXx__
+ /  /xxx\  \        VERSION:  UNIX  8.07  ISSUED: 11/20/2002
+   /     \          DATE:    09-SEP-2014    AT  17:59:09
+
+
+ .ENTER PROJECT/DATA EXTENSION:      stk/vac
+
+ Results file: results.stk.0                                                                   
+**** SPIDER NORMAL STOP ****
+ .OPERATION:      b02
+
+ \__`O O'__/        SPIDER  --  COPYRIGHT 1993
+ ,__xXXXx___        HEALTH RESEARCH INC., ALBANY, NY.
+  __xXXXx__
+ /  /xxx\  \        VERSION:  UNIX  8.07  ISSUED: 11/20/2002
+   /     \          DATE:    09-SEP-2014    AT  17:59:10
+
+
+ .ENTER PROJECT/DATA EXTENSION:      nrm/vac
+
+ Results file: results.nrm.0                                                                   
+**** SPIDER NORMAL STOP ****
+ .OPERATION:      b03

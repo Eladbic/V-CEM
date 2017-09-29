@@ -1,0 +1,65 @@
+fr
+?Doc file from AP MQ?<1>
+; docapmq
+fr
+?Name of input particles?<2>
+; original particles _1
+fr
+?Name of rotated particles?<3>
+; rotated particles  _2
+fr
+?Previous transformation parameters doc file?<4>
+fr
+?New transformation parameters doc file?<5>
+;
+; Format of the transformation parameters doc file is:
+;  angle, Sx, Sy, 0-1 flag for Y-mirror (0-no mirror; 1-mirror)
+
+ud n,x50
+<1>
+
+do lb1 x55=1,x50
+ud ic,x55,x21,x22,x23,x24,x25,x26
+<1>
+if(x21.lt.0) then
+x29=1
+else
+x29=0
+endif
+
+ud ic,x55,x31,x32,x33,x34
+<4>
+
+@combat[x31,x32,x33,x34,x23,x24,x25,x29,x51,x52,x53,x54]
+
+sd x55,x51,x52,x53,x54
+<5>
+if(x54.eq.0) then
+rt sq
+<2>x26
+<3>x26
+x51
+x52,x53
+else
+rt sq
+<2>x26
+_1
+x51
+x52,x53
+mr
+_1
+<3>x26
+Y
+endif
+lb1
+
+de
+_1
+
+ud ice
+<1>
+ud ice
+<4>
+sd e
+<5>
+re

@@ -1,0 +1,54 @@
+; template script for windowing molecules from images
+; IMGNUM is replaced with the four digit micrograph number
+; PRTNUM is replaced with the number of particles picked from that
+;           micrograph
+;
+
+; NOTHING NEEDS TO BE CHANGED
+
+
+;x50 is the size of the windowed image.
+x50=BOX
+;x51 equals half of x50.
+x51=x50/2
+;x52 is the radius of the mask
+x52=MASK
+;x55 is the number of particles selected from the micrographs.
+x55=PRTNUM
+;
+bl
+_6
+x50,x50
+n
+0.0
+ma
+_6
+_3
+x52
+d
+e
+1.0
+x51,x51
+;
+do lb1 x19=1,x55
+ud x19,x21,x22
+PICK/crd_IMGNUM
+x30=x21-x51
+x31=x22-x51
+wi
+pic-files/pic_sIMGNUM
+_1
+x50,x50
+x30,x31
+ra
+_1
+_2
+; ce fit and contrast inversion.
+ce fit
+nse-files/nse_IMGNUM
+_2
+_3
+win/IMGNUM/win_{*****x19}
+lb1
+ud e
+en d
