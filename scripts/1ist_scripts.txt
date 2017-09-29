@@ -1,0 +1,35 @@
+1.	align					#all script for align in spider
+2.	batchboxer.csh				#EMAN1 change box size
+3.	copy2smb.sh				#copy to smb server
+4.	ctf_filter2rl.sh			#filter micrographs by defocus/resolution from ctffind4 and generate .star file for Relion
+5.	DfCorrY.sh				#script to run Agard motincorr 1.0
+6.	Dflog_list.sh				#chack micrographs for missing frame [black]
+7.	dm2mrcMoCoFFT.sh			#script to run motioncorr
+8.	sxctf_filter2rl.sh			#filter micrographs by defocus/resolution form sxctre.py and generate .star file for Relion
+9.	dm3tomrc_s				#convert .dm3 to .mrc
+10.	dm4tomrc.sh				#convert .dm4 to .mrc
+11.	dosefgpu_driftcorr			#Yifan motion correction software v2.1
+12.	Frop_dm4Stk.sc				#Teru script for motincorr 1.0
+13.	Gautomatch-v0.50_sm_30_cu5.5_x86_64	#Gautomatch software
+14.	Gctf-v0.50_sm_30_cu5.5_x86_64		#Gctf software
+15.	list_ctffind4_V3.sh			#make list of ctf parameters from ctffind4
+16.	loop4dm.sh				#convert .dm4 to .mrc and copy to new dir
+17.	motioncorr				#Yifan motion correction software v
+18.	motioncorr2_1.sh			#script to run motioncorr 2.1
+19.	mrc_rescale.sc				#script to rescale the mrc file, and reverse the contrast
+20.	RCToutput.sh				#write output from RCT e2boxer
+21.	toBinned.sh				#bined file
+22.	toHdf.sh				#convert .dm3 to .hdf
+23.	toRenameInc.sh				#change file name&number
+24.	UcsfDfCorr-12-27-2015			#Agard motion correction software
+25.	stack2spier				#make stack for spider
+26.	gctf.sh					#ctf parameter on GPU using Gctf can do CTF for tilt
+27.	gpick					#autopick on GPU using Gautomatch
+28.	sxcter.py				#script to run sxcter on Accre
+29.	sb2accre_template.sh			#template slurme script to run software from SBgrid on ACCRE
+30.	mpc_rt.com				#script to do on-the-fly data processing (dm4 motioncorr Gautomatch Gctf)
+31.	
+32.	
+33.	
+34.	
+35.	
